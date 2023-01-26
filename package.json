@@ -1,0 +1,55 @@
+{
+  "name": "worker-swarmer",
+  "version": "1.0.0",
+  "description": "A lib that allows spawning a worker implementation into many. This is essentially a worker pooler with simple API surface.",
+  "main": "./dist/umd/index.js",
+  "module": "./dist/esm/index.js",
+  "exports": {
+    "import": "./dist/esm/index.js",
+    "node": "./dist/umd/index.js",
+    "require": "./dist/umd/index.js",
+    "default": "./dist/esm/index.js"
+  },
+  "types": "./dist/esm/index.d.ts",
+  "scripts": {
+    "build": "npm run build:pre && npm run build:umd && npm run build:esm && npm run build:post",
+    "build:dev": "webpack --mode=development",
+    "build:umd": "webpack --mode=production --node-env=production",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:pre": "rm -rf dist",
+    "build:post": "./fixup.js",
+    "watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZheyangSong/worker-swarmer.git"
+  },
+  "files": [
+    "/dist"
+  ],
+  "keywords": [
+    "web worker",
+    "thread pool",
+    "worker scheduler",
+    "typescript",
+    "javascript"
+  ],
+  "author": "Zheyang Song <jerome_soung@hotmail.com> (https://github.com/ZheyangSong)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ZheyangSong/worker-swarmer/issues"
+  },
+  "homepage": "https://github.com/ZheyangSong/worker-swarmer#readme",
+  "devDependencies": {
+    "prettier": "^2.8.1",
+    "ts-jest": "^29.0.5",
+    "ts-loader": "^9.4.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.9.4",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  },
+  "dependencies": {
+    "nanoid": "^4.0.0"
+  }
+}

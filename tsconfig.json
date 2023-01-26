@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "module": "CommonJS",
+    "target": "ES6",
+    "allowJs": true,
+    "sourceMap": true,
+    "lib": ["ES2015", "WebWorker"],
+    "moduleResolution": "node",
+  },
+  "files": ["src/index.ts"],
+}
