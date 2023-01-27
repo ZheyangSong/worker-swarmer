@@ -8,8 +8,3 @@ export interface IQueueRequest<I, O> {
 }
 
 export type TWorkerMaker = () => Worker;
-
-export interface IReport<T> {
-  reqTs: number;
-  data: T;
-}
