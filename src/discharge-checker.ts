@@ -1,4 +1,4 @@
-import { Scheduler } from './scheduler';
+import { Scheduler } from "./scheduler";
 
 export class DischargeChecker {
   private checkerCycleStartTs = 0;
@@ -14,10 +14,13 @@ export class DischargeChecker {
 
   private doCheck(t: number) {
     if (
-      this.totalChecksOfCycle /* only consider discharging when there's meaningful data */ &&
+      this
+        .totalChecksOfCycle /* only consider discharging when there's meaningful data */ &&
       t - this.checkerCycleStartTs >= 168
     ) {
-      const numToDischarge = Math.ceil(this.accumulatedIdleCount / this.totalChecksOfCycle);
+      const numToDischarge = Math.ceil(
+        this.accumulatedIdleCount / this.totalChecksOfCycle
+      );
 
       if (numToDischarge >= this.scheduler.idleCount) {
         this.scheduler.discharge(numToDischarge);

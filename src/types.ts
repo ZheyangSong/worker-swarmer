@@ -1,4 +1,4 @@
-import { REQ_EARLY_TERMINATION_TOKEN } from './constants';
+import { REQ_EARLY_TERMINATION_TOKEN } from "./constants";
 
 export type TInterruptableReq<T> = T | typeof REQ_EARLY_TERMINATION_TOKEN;
 

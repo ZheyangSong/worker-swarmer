@@ -12,3 +12,9 @@
   - when recycling is enabled, two new methods becomes avaialbe on the swarmed callable:
     - `enableRecycling`
     - `disableRecycling`
+
+## 2.0.1
+- INVALID. It contains the same content as 2.0.0
+
+## 2.0.2
+- issue fix: swarmed worker stops handling incoming requests when the apps fps is quite low and recycling is enabled.
