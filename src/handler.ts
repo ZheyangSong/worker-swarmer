@@ -1,13 +1,17 @@
-import type { Scheduler } from './scheduler';
-import { IQueueRequest, TInterruptableReq } from './types';
+import type { Scheduler } from "./scheduler";
+import { IQueueRequest, TInterruptableReq } from "./types";
 
 export class Handler<I, O> {
   private working = false;
   private retireRequested = false;
 
-  constructor(private scheduler: Scheduler<I, O>, private worker: Worker, private _id: string) {}
+  constructor(
+    private scheduler: Scheduler<I, O>,
+    private worker: Worker,
+    private _id: string
+  ) {}
 
-  public handle(req: IQueueRequest<I, O>['details']) {
+  public handle(req: IQueueRequest<I, O>["details"]) {
     return new Promise<TInterruptableReq<O>>((resolve) => {
       this.handleRequest({ details: req, report: resolve });
     });
