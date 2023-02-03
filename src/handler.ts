@@ -32,7 +32,7 @@ export class Handler<I, O> {
       if (this.retireRequested) {
         this.destroy();
       } else {
-        this.scheduler.handleQueuedRequest(this);
+        this.working = this.scheduler.handleQueuedRequest(this);
       }
     };
 

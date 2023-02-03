@@ -93,11 +93,15 @@ export class Scheduler<I, O> {
       if (nextReq) {
         handler.handleRequest(nextReq);
         this.busyHandlers.add(handler.id);
+
+        return true;
       } else {
         this.busyHandlers.delete(handler.id);
         this.idleHandlers.push(handler.id);
       }
     }
+
+    return false;
   }
 
   public kill() {
@@ -113,7 +117,7 @@ export class Scheduler<I, O> {
   }
 
   public discharge(numToDischarge: number) {
-    while (this.idleCount > 0 && numToDischarge--) {
+    while (this.idleCount > this.requestQueue.length && numToDischarge--) {
       const handlerIdToDischarge = this.idleHandlers.pop();
       const handlerToDischarge = this.handlers.get(handlerIdToDischarge)!;
 
