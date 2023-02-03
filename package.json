@@ -18,7 +18,11 @@
     "build:esm": "tsc -p tsconfig.esm.json",
     "build:pre": "rm -rf dist",
     "build:post": "./fixup.js",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags",
+    "prepack": "npm run build"
   },
   "repository": {
     "type": "git",
