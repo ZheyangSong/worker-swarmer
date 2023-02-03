@@ -13,10 +13,13 @@ export class DischargeChecker {
   }
 
   private doCheck(t: number) {
-    if (t - this.checkerCycleStartTs >= 168) {
-      const numToDischarge = Math.ceil(this.scheduler.idleCount - this.accumulatedIdleCount / this.totalChecksOfCycle)
+    if (
+      this.totalChecksOfCycle /* only consider discharging when there's meaningful data */ &&
+      t - this.checkerCycleStartTs >= 168
+    ) {
+      const numToDischarge = Math.ceil(this.accumulatedIdleCount / this.totalChecksOfCycle);
 
-      if (numToDischarge > 0) {
+      if (numToDischarge >= this.scheduler.idleCount) {
         this.scheduler.discharge(numToDischarge);
       }
 
