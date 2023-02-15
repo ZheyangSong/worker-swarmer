@@ -1,6 +1,6 @@
 {
   "name": "worker-swarmer",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "A lib that allows spawning a worker implementation into many. This is essentially a worker pooler with simple API surface.",
   "main": "./dist/umd/index.js",
   "module": "./dist/esm/index.js",

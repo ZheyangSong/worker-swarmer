@@ -40,7 +40,10 @@ export class Scheduler<I, O> {
     this.ownHandlerIds = new Set<string>();
   }
 
-  public doRequest = (req: I, transferred?: IQueueRequest<I, O>["transferred"]) => {
+  public doRequest = (
+    req: I,
+    transferred?: IQueueRequest<I, O>["transferred"]
+  ) => {
     const handler = this.getHandler();
     let result: Promise<TInterruptableReq<O>>;
     const qReq: IQueueRequest<I, O>["details"] = { ...req };
@@ -71,7 +74,10 @@ export class Scheduler<I, O> {
     return this.handlers.get(handlerId);
   }
 
-  private arrangeRequest(req: IQueueRequest<I, O>["details"], transferred: IQueueRequest<I, O>["transferred"]) {
+  private arrangeRequest(
+    req: IQueueRequest<I, O>["details"],
+    transferred: IQueueRequest<I, O>["transferred"]
+  ) {
     let report: IQueueRequest<I, O>["report"];
 
     const deferredRequestResult = new Promise<TInterruptableReq<O>>((res) => {
