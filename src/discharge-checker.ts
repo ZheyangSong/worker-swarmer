@@ -22,8 +22,8 @@ export class DischargeChecker {
         this.accumulatedIdleCount / this.totalChecksOfCycle
       );
 
-      if (numToDischarge >= this.scheduler.idleCount) {
-        this.scheduler.discharge(numToDischarge);
+      if (numToDischarge <= this.scheduler.idleCount) {
+        this.scheduler.discharge(Math.max(numToDischarge, this.scheduler.idleCount - numToDischarge));
       }
 
       this.checkerCycleStartTs = t;
