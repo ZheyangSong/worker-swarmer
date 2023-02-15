@@ -63,7 +63,31 @@ swarmedSuperworker({
 swarmedSuperWorker.terminate();
 ```
 
-### 2. Control idle web worker's eligibility for recycling.
+### 2. Transfer transferables
+
+Often times, using multi-threading involves processing huge amount of data. In this case, the data exchange overhaeds won't be negligible if structured cloning is used. Thus, transferring the data when possible will significantly cut the overheads. When using native `postMessage`, this can be done by listing out all objects to transfer when sending data to the other context. For the swarmed instance, similar syntax is also supported.
+
+```ts
+import { swarm } from "worker-swarmer";
+
+interface IDataCruncherInput {
+  data: ArrayBuffer;
+}
+
+const swarmed = swarm<IDataCruncherInput, void>(
+  () => new Worker(new URL("my-data-cruncher.ts", import.meta.url))
+);
+
+const msg = {
+  data: new ArrayBuffer(8 * 1024 * 1024) // 8MB data
+};
+
+swarmed(msg, [msg.data]).then(
+  (result) => console.log(msg.data === undefined) // 'true' should be logged in the console.
+);
+```
+
+### 3. Control idle web worker's eligibility for recycling.
 
 By default, a swarmed instance will try to recycle some web workers after they are idle for certain period of time. This can potentially reserve some resource consumption. But, it's inteneded to avoid the overhead of spinning up a web worker. The recycling can be disabled completely or paused for as long as needed.
 
