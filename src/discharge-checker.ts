@@ -23,7 +23,9 @@ export class DischargeChecker {
       );
 
       if (numToDischarge <= this.scheduler.idleCount) {
-        this.scheduler.discharge(Math.max(numToDischarge, this.scheduler.idleCount - numToDischarge));
+        this.scheduler.discharge(
+          Math.max(numToDischarge, this.scheduler.idleCount - numToDischarge)
+        );
       }
 
       this.checkerCycleStartTs = t;

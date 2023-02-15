@@ -11,7 +11,10 @@ export class Handler<I, O> {
     private _id: string
   ) {}
 
-  public handle(req: IQueueRequest<I, O>["details"], transferred: IQueueRequest<I, O>["transferred"]) {
+  public handle(
+    req: IQueueRequest<I, O>["details"],
+    transferred: IQueueRequest<I, O>["transferred"]
+  ) {
     return new Promise<TInterruptableReq<O>>((resolve) => {
       this.handleRequest({ details: req, transferred, report: resolve });
     });
