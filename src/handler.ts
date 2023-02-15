@@ -11,9 +11,9 @@ export class Handler<I, O> {
     private _id: string
   ) {}
 
-  public handle(req: IQueueRequest<I, O>["details"]) {
+  public handle(req: IQueueRequest<I, O>["details"], transferred: IQueueRequest<I, O>["transferred"]) {
     return new Promise<TInterruptableReq<O>>((resolve) => {
-      this.handleRequest({ details: req, report: resolve });
+      this.handleRequest({ details: req, transferred, report: resolve });
     });
   }
 
@@ -25,7 +25,7 @@ export class Handler<I, O> {
     this.worker.terminate();
   }
 
-  public handleRequest({ details, report }: IQueueRequest<I, O>) {
+  public handleRequest({ details, transferred, report }: IQueueRequest<I, O>) {
     this.working = true;
 
     const msgHandler = ({ data }: MessageEvent) => {
@@ -41,7 +41,7 @@ export class Handler<I, O> {
     };
 
     this.worker.addEventListener("message", msgHandler);
-    this.worker.postMessage(details);
+    this.worker.postMessage(details, transferred);
   }
 
   public retire() {
