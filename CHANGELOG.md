@@ -18,3 +18,7 @@
 
 ## 2.0.2
 - issue fix: swarmed worker stops handling incoming requests when the apps fps is quite low and recycling is enabled.
+
+## 2.1.0
+- issue fix: relax worker recycling logic to avoid too frequent worker destroy/re-create.
+- enhancement: support specifying objects to transfer. One can now optionally specify a list of transferable objects along with messsage to send. See `README` for details.
