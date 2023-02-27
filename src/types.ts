@@ -16,3 +16,5 @@ export interface IConfigOpts {
   immediate?: boolean;
   recyclable?: boolean;
 }
+
+export type TWorkerEventHandler = <K extends keyof WorkerEventMap>(evtType: K, handler: (evt: WorkerEventMap[K]) => any) => () => void

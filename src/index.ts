@@ -1,12 +1,14 @@
 import { Scheduler } from "./scheduler";
-import { TWorkerMaker, IConfigOpts } from "./types";
+import { TWorkerMaker, IConfigOpts, TWorkerEventHandler } from "./types";
 
 export { REQ_EARLY_TERMINATION_TOKEN } from "./constants";
-export { TWorkerMaker, IConfigOpts } from "./types";
+
+export { TWorkerMaker, IConfigOpts, TWorkerEventHandler };
 
 type SchedulerInstance<I, O> = InstanceType<typeof Scheduler<I, O>>;
 type ISwarmed<I, O> = SchedulerInstance<I, O>["doRequest"] & {
   terminate: SchedulerInstance<I, O>["kill"];
+  onWorkerEvent: TWorkerEventHandler
 };
 type ISwarmedWithResourceSaving<I, O> = ISwarmed<I, O> & {
   disableRecycling: () => void;
@@ -35,6 +37,7 @@ export function swarm<I = any, O = any>(
   if (recyclable) {
     const swarmed: ISwarmedWithResourceSaving<I, O> = (req) =>
       scheduler.doRequest(req);
+    swarmed["onWorkerEvent"] = scheduler.subWorkerEvent;
     swarmed["disableRecycling"] = () => scheduler.pauseResourceSaving();
     swarmed["enableRecycling"] = () => scheduler.restartResourceSaving();
     swarmed["terminate"] = () => scheduler.kill();
@@ -42,6 +45,7 @@ export function swarm<I = any, O = any>(
     return swarmed;
   } else {
     const swarmed: ISwarmed<I, O> = (req) => scheduler.doRequest(req);
+    swarmed["onWorkerEvent"] = scheduler.subWorkerEvent;
     swarmed["terminate"] = () => scheduler.kill();
 
     return swarmed;
