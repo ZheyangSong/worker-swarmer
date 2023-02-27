@@ -2,7 +2,7 @@ import { nanoid } from "nanoid";
 import { REQ_EARLY_TERMINATION_TOKEN } from "./constants";
 import { Handler } from "./handler";
 import { DischargeChecker } from "./discharge-checker";
-import { IQueueRequest, TInterruptableReq, TWorkerMaker } from "./types";
+import { IQueueRequest, TInterruptableReq, TWorkerMaker, TWorkerEventHandler } from "./types";
 
 export class Scheduler<I, O> {
   private busyHandlers = new Set<string>();
@@ -12,6 +12,7 @@ export class Scheduler<I, O> {
   private requestQueue: IQueueRequest<I, O>[] = [];
   private ownHandlerIds = new Set<string>();
   private dischargeChecker: DischargeChecker;
+  public workerEvents = new EventTarget();
 
   public get idleCount() {
     return this.idleHandlers.length;
@@ -73,12 +74,12 @@ export class Scheduler<I, O> {
 
     if (!handlerId && this.spawned < this.maxTotal) {
       handlerId = nanoid();
-      this.handlers.set(
-        handlerId,
-        new Handler(this, this.workerMaker(), handlerId)
-      );
+      const h = new Handler(this, this.workerMaker(), handlerId);
+      this.handlers.set(handlerId, h);
       this.ownHandlerIds.add(handlerId);
       this.spawned++;
+
+      h
     }
 
     return this.handlers.get(handlerId);
@@ -143,6 +144,18 @@ export class Scheduler<I, O> {
         this.ownHandlerIds.delete(handlerIdToDischarge);
         this.spawned--;
       }
+    }
+  }
+
+  public subWorkerEvent: TWorkerEventHandler = (evtType, handler) => {
+    const h = (evt: CustomEvent) => {
+      handler(evt.detail);
+    };
+
+    this.workerEvents.addEventListener(evtType, h);
+
+    return () => {
+      this.workerEvents.removeEventListener(evtType, h);
     }
   }
 
