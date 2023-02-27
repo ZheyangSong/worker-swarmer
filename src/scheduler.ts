@@ -20,6 +20,8 @@ export class Scheduler<I, O> {
   constructor(
     private workerMaker: TWorkerMaker,
     private maxTotal = 3,
+    private minAlive = 0,
+    private immediate = false,
     recycleIdleWorkers = true
   ) {
     this.init();
@@ -28,6 +30,14 @@ export class Scheduler<I, O> {
       this.dischargeChecker = new DischargeChecker(this);
 
       this.dischargeChecker.start();
+    }
+
+    if (immediate && (minAlive >=0 || !recycleIdleWorkers)) {
+      let ct = Math.min(minAlive || Infinity, maxTotal);
+
+      while (ct--) {
+        this.getHandler();
+      }
     }
   }
 
@@ -124,7 +134,7 @@ export class Scheduler<I, O> {
   }
 
   public discharge(numToDischarge: number) {
-    while (this.idleCount > this.requestQueue.length && numToDischarge--) {
+    while (this.idleCount > this.minAlive && this.idleCount > this.requestQueue.length && numToDischarge--) {
       const handlerIdToDischarge = this.idleHandlers.pop();
       const handlerToDischarge = this.handlers.get(handlerIdToDischarge)!;
 
