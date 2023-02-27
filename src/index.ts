@@ -1,8 +1,8 @@
 import { Scheduler } from "./scheduler";
-import { TWorkerMaker } from "./types";
+import { TWorkerMaker, IConfigOpts } from "./types";
 
 export { REQ_EARLY_TERMINATION_TOKEN } from "./constants";
-export { TWorkerMaker } from "./types";
+export { TWorkerMaker, IConfigOpts } from "./types";
 
 type SchedulerInstance<I, O> = InstanceType<typeof Scheduler<I, O>>;
 type ISwarmed<I, O> = SchedulerInstance<I, O>["doRequest"] & {
@@ -15,20 +15,22 @@ type ISwarmedWithResourceSaving<I, O> = ISwarmed<I, O> & {
 
 export function swarm<I, O>(
   workerMaker: TWorkerMaker,
-  args: { maxCount?: number; recyclable?: true }
+  args?: Omit<IConfigOpts, 'recyclable'> & { recyclable?: true }
 ): ISwarmedWithResourceSaving<I, O>;
 export function swarm<I, O>(
   workerMaker: TWorkerMaker,
-  args: { maxCount?: number; recyclable: false }
+  args?: Omit<IConfigOpts, 'recyclable'> & { recyclable: false }
 ): ISwarmed<I, O>;
 export function swarm<I = any, O = any>(
   workerMaker: TWorkerMaker,
   {
     maxCount = 3,
     recyclable = true,
-  }: { maxCount?: number; recyclable?: boolean } = {}
+    minCount = 0,
+    immediate = false,
+  }: IConfigOpts = {}
 ) {
-  const scheduler = new Scheduler<I, O>(workerMaker, maxCount, recyclable);
+  const scheduler = new Scheduler<I, O>(workerMaker, maxCount, minCount, immediate, recyclable);
 
   if (recyclable) {
     const swarmed: ISwarmedWithResourceSaving<I, O> = (req) =>

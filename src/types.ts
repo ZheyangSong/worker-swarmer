@@ -9,3 +9,10 @@ export interface IQueueRequest<I, O> {
 }
 
 export type TWorkerMaker = () => Worker;
+
+export interface IConfigOpts {
+  maxCount?: number;
+  minCount?: number;
+  immediate?: boolean;
+  recyclable?: boolean;
+}
