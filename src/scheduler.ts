@@ -2,7 +2,12 @@ import { nanoid } from "nanoid";
 import { REQ_EARLY_TERMINATION_TOKEN } from "./constants";
 import { Handler } from "./handler";
 import { DischargeChecker } from "./discharge-checker";
-import { IQueueRequest, TInterruptableReq, TWorkerMaker, TWorkerEventHandler } from "./types";
+import {
+  IQueueRequest,
+  TInterruptableReq,
+  TWorkerMaker,
+  TWorkerEventHandler,
+} from "./types";
 
 export class Scheduler<I, O> {
   private busyHandlers = new Set<string>();
@@ -33,7 +38,7 @@ export class Scheduler<I, O> {
       this.dischargeChecker.start();
     }
 
-    if (immediate && (minAlive >=0 || !recycleIdleWorkers)) {
+    if (immediate && (minAlive >= 0 || !recycleIdleWorkers)) {
       let ct = Math.min(minAlive || Infinity, maxTotal);
 
       while (ct--) {
@@ -79,7 +84,7 @@ export class Scheduler<I, O> {
       this.ownHandlerIds.add(handlerId);
       this.spawned++;
 
-      h
+      h;
     }
 
     return this.handlers.get(handlerId);
@@ -135,7 +140,11 @@ export class Scheduler<I, O> {
   }
 
   public discharge(numToDischarge: number) {
-    while (this.idleCount > this.minAlive && this.idleCount > this.requestQueue.length && numToDischarge--) {
+    while (
+      this.idleCount > this.minAlive &&
+      this.idleCount > this.requestQueue.length &&
+      numToDischarge--
+    ) {
       const handlerIdToDischarge = this.idleHandlers.pop();
       const handlerToDischarge = this.handlers.get(handlerIdToDischarge)!;
 
@@ -156,8 +165,8 @@ export class Scheduler<I, O> {
 
     return () => {
       this.workerEvents.removeEventListener(evtType, h);
-    }
-  }
+    };
+  };
 
   public pauseResourceSaving() {
     this.dischargeChecker?.stop();
