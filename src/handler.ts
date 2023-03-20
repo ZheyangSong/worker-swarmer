@@ -14,25 +14,31 @@ export class Handler<I, O> {
     private _id: string
   ) {
     this.errorEvtHandler = (ev) => {
-      this.scheduler.workerEvents.dispatchEvent(new CustomEvent('error', {
-        detail: ev
-      }));
+      this.scheduler.workerEvents.dispatchEvent(
+        new CustomEvent("error", {
+          detail: ev,
+        })
+      );
     };
-    this.worker.addEventListener('error', this.errorEvtHandler);
+    this.worker.addEventListener("error", this.errorEvtHandler);
 
     this.messageEvtHandler = (ev) => {
-      this.scheduler.workerEvents.dispatchEvent(new CustomEvent('message', {
-        detail: ev
-      }));
+      this.scheduler.workerEvents.dispatchEvent(
+        new CustomEvent("message", {
+          detail: ev,
+        })
+      );
     };
-    this.worker.addEventListener('message', this.messageEvtHandler);
+    this.worker.addEventListener("message", this.messageEvtHandler);
 
     this.messageerrorEvtHandler = (ev) => {
-      this.scheduler.workerEvents.dispatchEvent(new CustomEvent('messageerror', {
-        detail: ev
-      }));
+      this.scheduler.workerEvents.dispatchEvent(
+        new CustomEvent("messageerror", {
+          detail: ev,
+        })
+      );
     };
-    this.worker.addEventListener('messageerror', this.messageerrorEvtHandler);
+    this.worker.addEventListener("messageerror", this.messageerrorEvtHandler);
   }
 
   public handle(
@@ -49,9 +55,12 @@ export class Handler<I, O> {
   }
 
   public destroy() {
-    this.worker.removeEventListener('error', this.errorEvtHandler);
-    this.worker.removeEventListener('message', this.messageEvtHandler);
-    this.worker.removeEventListener('messageerror', this.messageerrorEvtHandler);
+    this.worker.removeEventListener("error", this.errorEvtHandler);
+    this.worker.removeEventListener("message", this.messageEvtHandler);
+    this.worker.removeEventListener(
+      "messageerror",
+      this.messageerrorEvtHandler
+    );
 
     this.worker.terminate();
   }
