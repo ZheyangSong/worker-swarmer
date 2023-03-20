@@ -118,3 +118,35 @@ swarmedWithRecycling.disableRecycling(); // Let's pause recycling idle workers
 // mission-critical work has been finished, let's re-enable recycling.
 swarmedWithRecycling.enableRecycling();
 ```
+
+### 4. Subscribe to work-emitted event.
+
+In some cases, when web workers are used as long-running services, they can actively emit events to notify main thread as well. For such scenarios, the promise-based APIs won't help much by nature. On the other hand, one can use a different event-based API to receive a streams of work-emitted events.
+
+```ts
+/* random-work.ts */
+
+setInterval(() => {
+  globalThis.postMessage({
+    myth: Math.random(),
+  });
+}, 1500);
+```
+
+```ts
+/* main app */
+
+import { swarm } from "worker-swarmer";
+
+const swarmed = swarm(() => new Worker(
+  new URL("./random-worker.ts", import.meta.url)),
+  { maxCount: 10 }
+);
+
+swarmed.onWorkerEvent("message", (msg) => {
+  const { myth } = msg.data;
+
+  console.log(`Here is a new myth: ${myth}`);
+});
+
+```
