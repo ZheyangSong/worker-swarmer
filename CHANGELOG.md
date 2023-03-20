@@ -22,3 +22,6 @@
 ## 2.1.0
 - issue fix: relax worker recycling logic to avoid too frequent worker destroy/re-create.
 - enhancement: support specifying objects to transfer. One can now optionally specify a list of transferable objects along with messsage to send. See `README` for details.
+
+## 2.2.0
+- introduce new API, `onWorkerEvent`, to receive worker-emitted event streams.
