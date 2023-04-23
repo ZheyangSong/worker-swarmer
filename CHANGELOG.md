@@ -25,3 +25,9 @@
 
 ## 2.2.0
 - introduce new API, `onWorkerEvent`, to receive worker-emitted event streams.
+
+## 2.2.1
+- issue fix: when a worker crashes, automatically cleaning it up to allow the swarmed instance to continue function properly
+- expose extra possible worker event to the users:
+  - rejectionhandled
+  - rejectionunhandled
