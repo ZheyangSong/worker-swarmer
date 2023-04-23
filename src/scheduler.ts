@@ -83,8 +83,6 @@ export class Scheduler<I, O> {
       this.handlers.set(handlerId, h);
       this.ownHandlerIds.add(handlerId);
       this.spawned++;
-
-      h;
     }
 
     return this.handlers.get(handlerId);
@@ -127,6 +125,21 @@ export class Scheduler<I, O> {
     return false;
   }
 
+  public handleCrashedHandler(handler: Handler<I, O>) {
+    if (this.ownHandlerIds.has(handler.id)) {
+      this.handlers.delete(handler.id);
+      this.ownHandlerIds.delete(handler.id);
+      this.busyHandlers.delete(handler.id);
+      this.spawned--;
+
+      if (!this.busyHandlers.size && this.requestQueue.length) {
+        // when no active handlers for already queued requests,
+        // make a new handler right away.
+        this.handleQueuedRequest(this.getHandler());
+      }
+    }
+  }
+
   public kill() {
     this.handlers.forEach((h) => {
       h.destroy();
@@ -137,6 +150,7 @@ export class Scheduler<I, O> {
     });
 
     this.init();
+    this.pauseResourceSaving();
   }
 
   public discharge(numToDischarge: number) {
