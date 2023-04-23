@@ -150,3 +150,27 @@ swarmed.onWorkerEvent("message", (msg) => {
 });
 
 ```
+
+### 5. Automatically Recover from Worker Crash
+From time to time, a web worker may crash and emit "error" event due to unhandled exceptions. Since `v2.2.1`, this worker crash will be handled internally automatically. This means,
++ the emitted "error" event will still be reported to subscribers
++ the crashed worker will be cleaned up
++ a replacement will be created when it's necessary
++ the swarmed instance will always function regardless of worker crashes.
+
+In rare cases, if one wants to completely stop the swarmed instance's execution upon a work crash, he/she can invoke the `terminate()` method inside an "error" event handler:
+```ts
+/* main app */
+
+import { swarm } from "worker-swarmer";
+
+const swarmed = swarm(() => new Worker(
+  new URL("./random-worker.ts", import.meta.url)),
+  { maxCount: 10 }
+);
+
+swarmed.onWorkerEvent("error", () => {
+  swarmed.terminate();
+});
+
+```
