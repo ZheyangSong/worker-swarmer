@@ -31,3 +31,6 @@
 - expose extra possible worker event to the users:
   - rejectionhandled
   - rejectionunhandled
+
+## 2.2.2
+- issue fix: does extra code purge when needed. This helps to eliminate some potential entry points for memory leakage.

@@ -10,7 +10,7 @@ export class Handler<I, O> {
   private messageerrorEvtHandler: (ev: MessageEvent) => any;
   private rejectionhandledEvtHandler: (ev: MessageEvent) => any;
   private rejectionunhandledEvtHandler: (ev: MessageEvent) => any;
-  private resultReporter?: IQueueRequest<I, O>['report'];
+  private resultReporter?: IQueueRequest<I, O>["report"];
 
   constructor(
     private scheduler: Scheduler<I, O>,
@@ -60,7 +60,10 @@ export class Handler<I, O> {
         })
       );
     };
-    this.worker.addEventListener("rejectionhandled", this.rejectionhandledEvtHandler);
+    this.worker.addEventListener(
+      "rejectionhandled",
+      this.rejectionhandledEvtHandler
+    );
 
     this.rejectionunhandledEvtHandler = (ev) => {
       this.scheduler.workerEvents.dispatchEvent(
@@ -69,7 +72,10 @@ export class Handler<I, O> {
         })
       );
     };
-    this.worker.addEventListener("rejectionunhandled", this.rejectionunhandledEvtHandler);
+    this.worker.addEventListener(
+      "rejectionunhandled",
+      this.rejectionunhandledEvtHandler
+    );
   }
 
   public handle(
@@ -92,10 +98,18 @@ export class Handler<I, O> {
       "messageerror",
       this.messageerrorEvtHandler
     );
-    this.worker.removeEventListener("rejectionhandled", this.rejectionhandledEvtHandler);
-    this.worker.removeEventListener("rejectionunhandled", this.rejectionunhandledEvtHandler);
+    this.worker.removeEventListener(
+      "rejectionhandled",
+      this.rejectionhandledEvtHandler
+    );
+    this.worker.removeEventListener(
+      "rejectionunhandled",
+      this.rejectionunhandledEvtHandler
+    );
 
     this.worker.terminate();
+
+    this.resultReporter = undefined;
   }
 
   public handleRequest({ details, transferred, report }: IQueueRequest<I, O>) {
