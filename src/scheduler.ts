@@ -147,7 +147,11 @@ export class Scheduler<I, O> {
 
     this.requestQueue.forEach((r) => {
       r.report(REQ_EARLY_TERMINATION_TOKEN);
+      r.report = null;
     });
+
+    this.requestQueue = [];
+    this.handlers.clear();
 
     this.init();
     this.pauseResourceSaving();

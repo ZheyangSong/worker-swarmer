@@ -96,6 +96,8 @@ export class Handler<I, O> {
     this.worker.removeEventListener("rejectionunhandled", this.rejectionunhandledEvtHandler);
 
     this.worker.terminate();
+
+    this.resultReporter = undefined;
   }
 
   public handleRequest({ details, transferred, report }: IQueueRequest<I, O>) {
