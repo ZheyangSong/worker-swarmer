@@ -34,3 +34,6 @@
 
 ## 2.2.2
 - issue fix: does extra code purge when needed. This helps to eliminate some potential entry points for memory leakage.
+
+## 2.3.0
+- introduce new API, `resize`, to support changing min&max # of spawned workers dynamically
