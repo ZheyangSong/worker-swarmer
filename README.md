@@ -174,3 +174,26 @@ swarmed.onWorkerEvent("error", () => {
 });
 
 ```
+
+### 6. Change min/max Number of Spawned Workers
+For advanced usage, one can call the method, `resize`, to redefine the minimum and/or maximum number of workers to spawn. When new numbers are specified, if new max number is less than the current one. The extra worker instances will be automatically terminated in following order:
++ eliminate as many idle workers as needed
++ when there're no idle workers, attempt to eliminate busy workers.
+
+It's guaranteed to converge to the redefined numbers in a few request processing cycles. When both minimum and maximum are provided, an error is thrown if the maximum is less than the minimum.
+```ts
+/* main app */
+
+import { swarm } from "worker-swarmer";
+
+const swarmed = swarm(() => new Worker(
+  new URL("./random-worker.ts", import.meta.url)),
+  { maxCount: 10 }
+);
+
+// when certain conditions meet, resize the pool.
+swarmed.resize({
+  min: 3,
+  max: 5
+});
+```

@@ -123,6 +123,7 @@ export class Handler<I, O> {
 
       if (this.retireRequested) {
         this.destroy();
+        this.scheduler.resign(this.id);
       } else {
         this.working = this.scheduler.handleQueuedRequest(this);
       }
