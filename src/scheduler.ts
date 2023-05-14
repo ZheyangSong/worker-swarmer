@@ -56,20 +56,20 @@ export class Scheduler<I, O> {
     this.ownHandlerIds = new Set<string>();
   }
 
-  public resize(newSize: Partial<{min: number; max: number;}>) {
-    const {
-      min: minAlive = this.minAlive,
-      max: maxTotal = this.maxTotal,
-    } = newSize;
+  public resize(newSize: Partial<{ min: number; max: number }>) {
+    const { min: minAlive = this.minAlive, max: maxTotal = this.maxTotal } =
+      newSize;
 
     if (minAlive > maxTotal) {
-      throw new Error("illegal parameters: new min size is greater than new max size");
+      throw new Error(
+        "illegal parameters: new min size is greater than new max size"
+      );
     }
 
     this.minAlive = minAlive;
     let maxDiff = maxTotal - this.maxTotal;
 
-    while (maxDiff < 0) {
+    while (maxDiff < 0 && this.idleCount) {
       if (this.retireOneIdleHandler()) {
         maxDiff++;
       } else {
@@ -78,11 +78,14 @@ export class Scheduler<I, O> {
     }
 
     const busyHandlerIds = [...this.busyHandlers].reverse();
-    while (maxDiff < 0) {
+    while (maxDiff < 0 && busyHandlerIds.length) {
       const handlerIdToRetire = busyHandlerIds.pop();
       const handlerToRetire = this.handlers.get(handlerIdToRetire)!;
 
-      handlerToRetire.retire();
+      if (handlerToRetire.retire()) {
+        this.removeHandler(handlerIdToRetire);
+      }
+
       maxDiff++;
     }
 
@@ -197,7 +200,7 @@ export class Scheduler<I, O> {
     }
   }
 
-  public resign(handlerId: Handler<I, O>['id']) {
+  public resign(handlerId: Handler<I, O>["id"]) {
     if (this.ownHandlerIds.has(handlerId)) {
       this.removeHandler(handlerId);
     }
@@ -216,7 +219,7 @@ export class Scheduler<I, O> {
     return false;
   }
 
-  private removeHandler(handlerId: Handler<I, O>['id']) {
+  private removeHandler(handlerId: Handler<I, O>["id"]) {
     this.handlers.delete(handlerId);
     this.ownHandlerIds.delete(handlerId);
     this.busyHandlers.delete(handlerId);
